@@ -20,8 +20,10 @@ export class UserController {
 
     @Post()
     async createUser(@Body() user: UserDto, @Res() res: Response) {
+        const emailExist = await this.userService.getUserByEmail(user.email);
+        if (emailExist) return res.status(HttpStatus.BAD_REQUEST).json({ mensagem: 'Email já cadastrado.' });
+
         const response = await this.userService.createUser(user);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password: _, ...responseFormated } = response;
         return res.status(HttpStatus.CREATED).json({ mensagem: 'Usuário cadastrado com sucesso.', usuario: responseFormated });
     }
