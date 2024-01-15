@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import { Body, Controller, Get, HttpStatus, Post, Res } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -10,7 +11,11 @@ export class UserController {
     @Get()
     async listAllUsers(@Res() res: Response) {
         const response = await this.userService.getAllUsers();
-        return res.status(HttpStatus.OK).json(response);
+        const responseFormated = response.map((user) => {
+            const { password: _, createdAt: __, ...result } = user;
+            return result
+        })
+        return res.status(HttpStatus.OK).json(responseFormated);
     }
 
     @Post()
