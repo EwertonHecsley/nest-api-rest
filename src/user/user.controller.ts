@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, HttpStatus, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post, Res } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Response } from 'express';
 import { UserDto } from './dtos/user.dto';
@@ -15,6 +15,15 @@ export class UserController {
             const { password: _, createdAt: __, ...result } = user;
             return result
         })
+        return res.status(HttpStatus.OK).json(responseFormated);
+    }
+
+    @Get('/:id')
+    async getUserById(@Param('id') id: number, @Res() res: Response) {
+        const response = await this.userService.getUserById(Number(id));
+        if (!response) return res.status(HttpStatus.NOT_FOUND).json({ mensagem: 'Usuário não encontrado.' });
+
+        const { password: _, ...responseFormated } = response;
         return res.status(HttpStatus.OK).json(responseFormated);
     }
 
