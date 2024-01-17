@@ -18,15 +18,6 @@ export class UserController {
         return res.status(HttpStatus.OK).json(responseFormated);
     }
 
-    @Get('/:id')
-    async getUserById(@Param('id') id: number, @Res() res: Response) {
-        const response = await this.userService.getUserById(Number(id));
-        if (!response) throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
-
-        const { password: _, ...responseFormated } = response;
-        return res.status(HttpStatus.OK).json(responseFormated);
-    }
-
     @Post()
     async createUser(@Body() user: UserDto, @Res() res: Response) {
         const emailExist = await this.userService.getUserByEmail(user.email);
