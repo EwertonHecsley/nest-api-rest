@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Res } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Response } from 'express';
 import { UserDto } from './dtos/user.dto';
@@ -36,4 +36,13 @@ export class UserController {
         const { password: _, ...responseFormated } = response;
         return res.status(HttpStatus.CREATED).json({ mensagem: 'Usuário cadastrado com sucesso.', usuario: responseFormated });
     }
+
+    @Delete('/:id')
+    async deleteUser(@Param('id') id: number, @Res() res: Response) {
+        const response = await this.userService.getUserById(Number(id));
+        if (!response) throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
+
+        await this.userService.deleteUserById(Number(id));
+        return res.status(HttpStatus.NO_CONTENT).send();
+    };
 }

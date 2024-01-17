@@ -25,10 +25,14 @@ export class UserService {
     };
 
     public async getUserByEmail(email: string) {
-        return await this.prismaService.prisma.users.findUnique({ where: { email } });
+        return await this.prismaService.prisma.users.findFirst({ where: { email } });
     };
 
     public async getUserById(id: number) {
         return await this.prismaService.prisma.users.findUnique({ where: { id } });
+    };
+
+    public async deleteUserById(id: number) {
+        return await this.prismaService.prisma.users.delete({ where: { id } });
     };
 }
