@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, HttpStatus, Param, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Res } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Response } from 'express';
 import { UserDto } from './dtos/user.dto';
@@ -21,7 +21,7 @@ export class UserController {
     @Get('/:id')
     async getUserById(@Param('id') id: number, @Res() res: Response) {
         const response = await this.userService.getUserById(Number(id));
-        if (!response) return res.status(HttpStatus.NOT_FOUND).json({ mensagem: 'Usuário não encontrado.' });
+        if (!response) throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
 
         const { password: _, ...responseFormated } = response;
         return res.status(HttpStatus.OK).json(responseFormated);
@@ -30,7 +30,7 @@ export class UserController {
     @Post()
     async createUser(@Body() user: UserDto, @Res() res: Response) {
         const emailExist = await this.userService.getUserByEmail(user.email);
-        if (emailExist) return res.status(HttpStatus.BAD_REQUEST).json({ mensagem: 'Email já cadastrado.' });
+        if (emailExist) throw new HttpException('Email já cadastrado.', HttpStatus.BAD_REQUEST);
 
         const response = await this.userService.createUser(user);
         const { password: _, ...responseFormated } = response;
