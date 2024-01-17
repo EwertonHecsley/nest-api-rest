@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Res } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Response } from 'express';
 import { UserDto } from './dtos/user.dto';
@@ -35,5 +35,17 @@ export class UserController {
 
         await this.userService.deleteUserById(Number(id));
         return res.status(HttpStatus.NO_CONTENT).send();
-    };
+    }
+
+    @Put('/:id')
+    async updateUSer(@Param('id') id: number, @Body() user: UserDto, @Res() res: Response) {
+        const userExist = await this.userService.getUserById(Number(id));
+        if (!userExist) throw new HttpException('Usuário não encontrado.', HttpStatus.NOT_FOUND);
+
+        const emailExist = await this.userService.getUserByEmail(user.email);
+        if (emailExist) throw new HttpException('Email já cadastrado.', HttpStatus.BAD_REQUEST);
+
+        await this.userService.updateUser(user, Number(id));
+        return res.status(HttpStatus.NO_CONTENT).send();
+    }
 }

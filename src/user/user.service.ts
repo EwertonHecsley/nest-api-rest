@@ -24,15 +24,28 @@ export class UserService {
         return await this.prismaService.prisma.users.findMany();
     };
 
-    public async getUserByEmail(email: string) {
+    public async getUserByEmail(email: string): Promise<UserDto> {
         return await this.prismaService.prisma.users.findFirst({ where: { email } });
     };
 
-    public async getUserById(id: number) {
+    public async getUserById(id: number): Promise<UserDto> {
         return await this.prismaService.prisma.users.findUnique({ where: { id } });
     };
 
-    public async deleteUserById(id: number) {
+    public async deleteUserById(id: number): Promise<UserDto> {
         return await this.prismaService.prisma.users.delete({ where: { id } });
+    };
+
+    public async updateUser(user: UserDto, id: number): Promise<UserDto> {
+        return await this.prismaService.prisma.users.update({
+            where: {
+                id
+            },
+            data: {
+                name: user.name,
+                email: user.email,
+                password: user.password
+            }
+        });
     };
 }
