@@ -8,6 +8,7 @@ import HashPassword from './services/HashPassword';
 @Module({
     imports: [],
     controllers: [UserController],
-    providers: [UserService, PrismaService, HashPassword]
+    providers: [UserService, PrismaService, HashPassword],
+    exports: [UserService]
 })
 export class UserModule { }

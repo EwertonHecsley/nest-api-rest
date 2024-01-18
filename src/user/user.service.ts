@@ -26,7 +26,8 @@ export class UserService {
 
     public async getUserByEmail(email: string): Promise<UserDto> {
         return await this.prismaService.prisma.users.findFirst({ where: { email } });
-    };
+    }
+
 
     public async getUserById(id: number): Promise<UserDto> {
         return await this.prismaService.prisma.users.findUnique({ where: { id } });
